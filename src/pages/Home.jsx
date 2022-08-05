@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { getCategories } from '../services/api';
+import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
 
 export default class Home extends Component {
   constructor() {
     super();
     this.state = {
       categories: [],
+      products: '',
+      productsButton: [],
     };
   }
 
@@ -17,6 +19,23 @@ export default class Home extends Component {
     });
   }
 
+  handleChange = ({ target }) => {
+    const { value } = target;
+    this.setState({
+      [target.name]: value,
+    });
+  }
+
+  handleClick = async () => {
+    const { products, productsButton } = this.state;
+    const result = await getProductsFromCategoryAndQuery(products);
+    // console.log(result.results);
+    this.setState({
+      productsButton: result,
+    });
+    console.log(productsButton);
+  }
+
   render() {
     const { categories } = this.state;
     return (
@@ -24,6 +43,25 @@ export default class Home extends Component {
         <p data-testid="home-initial-message">
           Digite algum termo de pesquisa ou escolha uma categoria.
         </p>
+
+        <label htmlFor="products">
+          Pesquisar Produtos:
+          <input
+            name="products"
+            data-testid="query-input"
+            type="text"
+            id="products"
+            onChange={ this.handleChange }
+          />
+        </label>
+
+        <button
+          type="submit"
+          data-testid="query-button"
+          onClick={ this.handleClick }
+        >
+          Pesquisar
+        </button>
 
         <Link to="/ShoppingCart" data-testid="shopping-cart-button">
           <button
