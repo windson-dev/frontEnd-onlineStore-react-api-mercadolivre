@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import './App.css';
-import Home from './Pages/Home';
-import ShoppingCart from './Pages/ShoppingCart';
+import Home from './pages/Home';
+import ShoppingCart from './pages/ShoppingCart';
 
 export default class App extends Component {
   render() {
