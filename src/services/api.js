@@ -1,5 +1,6 @@
 export async function getCategories() {
   // Implemente aqui
+  // grupo 42! #vqv
 }
 
 export async function getProductsFromCategoryAndQuery(/* categoryId, query */) {
