@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
+import { getCategories,
+  getProducts } from '../services/api';
 
 export default class Home extends Component {
   constructor() {
@@ -27,19 +28,18 @@ export default class Home extends Component {
   }
 
   handleClick = async () => {
-    const { products, productsButton } = this.state;
-    const result = await getProductsFromCategoryAndQuery(products);
-    // console.log(result.results);
+    const { products } = this.state;
+    const result = await getProducts(products);
     this.setState({
-      productsButton: result,
+      productsButton: result.results,
     });
-    console.log(productsButton);
   }
 
   render() {
-    const { categories } = this.state;
+    const { categories, productsButton } = this.state;
     return (
       <main>
+
         <p data-testid="home-initial-message">
           Digite algum termo de pesquisa ou escolha uma categoria.
         </p>
@@ -72,7 +72,7 @@ export default class Home extends Component {
           </button>
         </Link>
 
-        <div>
+        <aside>
           {categories.map((categorie) => (
             <label key={ categorie.id } htmlFor={ categorie.id }>
               <input type="radio" value={ categorie.name } />
@@ -81,8 +81,21 @@ export default class Home extends Component {
               </p>
             </label>
           ))}
-        </div>
-
+        </aside>
+        {
+          productsButton.length === 0 ? <p>Nenhum produto foi encontrado</p>
+            : productsButton.map(({ title, thumbnail, price, id }) => (
+              <div key={ id } data-testid="product">
+                <p>{title}</p>
+                <img src={ thumbnail } alt={ title } />
+                <p>
+                  {price}
+                  {' '}
+                  R$
+                </p>
+              </div>
+            ))
+        }
       </main>
 
     );
