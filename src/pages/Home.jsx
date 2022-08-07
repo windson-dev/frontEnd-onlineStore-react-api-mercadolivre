@@ -85,21 +85,24 @@ export default class Home extends Component {
         </Link>
 
         <aside>
-          {categories.map((categorie) => (
-            <label key={ categorie.id } htmlFor={ categorie.id }>
-              <input
-                type="radio"
-                value={ categorie.name }
-                name="categoryRadios"
-                id={ categorie.id }
-                onChange={ this.handleChangeRadios }
-              />
-              <p data-testid="category" id={ categorie.id }>
-                { categorie.name }
-              </p>
-            </label>
-          ))}
+          {
+            categories.map((categorie) => (
+              <label key={ categorie.id } htmlFor={ categorie.id }>
+                <input
+                  type="radio"
+                  value={ categorie.name }
+                  name="categoryRadios"
+                  id={ categorie.id }
+                  onChange={ this.handleChangeRadios }
+                />
+                <p data-testid="category" id={ categorie.id }>
+                  { categorie.name }
+                </p>
+              </label>
+            ))
+          }
         </aside>
+
         {
           productsButton.length === 0 ? <p>Nenhum produto foi encontrado</p>
             : productsButton.map(({ title, thumbnail, price, id }) => (
@@ -115,15 +118,17 @@ export default class Home extends Component {
             ))
         }
 
-        {radioChanged && (
-          categoriesArray.map((e) => (
-            <div key={ e.id } data-testid="product">
-              <p>{ e.title }</p>
-              <img src={ e.thumbnail } alt={ e.title } />
-              <p><strong>{ `Preço: ${e.price}` }</strong></p>
-            </div>
-          ))
-        )}
+        {
+          radioChanged && (
+            categoriesArray.map((categorie) => (
+              <div key={ categorie.id } data-testid="product">
+                <p>{ categorie.title }</p>
+                <img src={ categorie.thumbnail } alt={ categorie.title } />
+                <p><strong>{ `Preço: ${categorie.price}` }</strong></p>
+              </div>
+            ))
+          )
+        }
 
       </main>
 
