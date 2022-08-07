@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories,
-  getProducts } from '../services/api';
+  getProducts, getCategoriesFromID } from '../services/api';
 
 export default class Home extends Component {
   constructor() {
@@ -10,6 +10,8 @@ export default class Home extends Component {
       categories: [],
       products: '',
       productsButton: [],
+      categoriesArray: [],
+      radioChanged: false,
     };
   }
 
@@ -35,8 +37,18 @@ export default class Home extends Component {
     });
   }
 
+  handleChangeRadios = async ({ target }) => {
+    this.setState({ radioChanged: true });
+    const { id } = target;
+    const response = await getCategoriesFromID(id);
+    const categoriesArray = await response.results;
+    this.setState({
+      categoriesArray,
+    });
+  }
+
   render() {
-    const { categories, productsButton } = this.state;
+    const { categories, productsButton, categoriesArray, radioChanged } = this.state;
     return (
       <main>
 
@@ -51,7 +63,7 @@ export default class Home extends Component {
             data-testid="query-input"
             type="text"
             id="products"
-            onChange={ this.handleChange }
+            onClick={ this.handleChange }
           />
         </label>
 
@@ -73,15 +85,24 @@ export default class Home extends Component {
         </Link>
 
         <aside>
-          {categories.map((categorie) => (
-            <label key={ categorie.id } htmlFor={ categorie.id }>
-              <input type="radio" value={ categorie.name } />
-              <p data-testid="category" id={ categorie.id }>
-                { categorie.name }
-              </p>
-            </label>
-          ))}
+          {
+            categories.map((categorie) => (
+              <label key={ categorie.id } htmlFor={ categorie.id }>
+                <input
+                  type="radio"
+                  value={ categorie.name }
+                  name="categoryRadios"
+                  id={ categorie.id }
+                  onChange={ this.handleChangeRadios }
+                />
+                <p data-testid="category" id={ categorie.id }>
+                  { categorie.name }
+                </p>
+              </label>
+            ))
+          }
         </aside>
+
         {
           productsButton.length === 0 ? <p>Nenhum produto foi encontrado</p>
             : productsButton.map(({ title, thumbnail, price, id }) => (
@@ -96,6 +117,19 @@ export default class Home extends Component {
               </div>
             ))
         }
+
+        {
+          radioChanged && (
+            categoriesArray.map((categorie) => (
+              <div key={ categorie.id } data-testid="product">
+                <p>{ categorie.title }</p>
+                <img src={ categorie.thumbnail } alt={ categorie.title } />
+                <p><strong>{ `Preço: ${categorie.price}` }</strong></p>
+              </div>
+            ))
+          )
+        }
+
       </main>
 
     );
