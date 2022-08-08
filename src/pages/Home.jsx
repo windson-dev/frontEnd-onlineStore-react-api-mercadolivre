@@ -78,7 +78,6 @@ export default class Home extends Component {
         <Link to="/ShoppingCart" data-testid="shopping-cart-button">
           <button
             type="button"
-
           >
             Button
           </button>
@@ -107,13 +106,18 @@ export default class Home extends Component {
           productsButton.length === 0 ? <p>Nenhum produto foi encontrado</p>
             : productsButton.map(({ title, thumbnail, price, id }) => (
               <div key={ id } data-testid="product">
-                <p>{title}</p>
-                <img src={ thumbnail } alt={ title } />
-                <p>
-                  {price}
-                  {' '}
-                  R$
-                </p>
+                <Link
+                  to={ `/product-details/${categorie.id}` }
+                  data-testid="product-detail-link"
+                >
+                  <p>{title}</p>
+                  <img src={ thumbnail } alt={ title } />
+                  <p>
+                    {price}
+                    {' '}
+                    R$
+                  </p>
+                </Link>
               </div>
             ))
         }
@@ -122,9 +126,14 @@ export default class Home extends Component {
           radioChanged && (
             categoriesArray.map((categorie) => (
               <div key={ categorie.id } data-testid="product">
-                <p>{ categorie.title }</p>
-                <img src={ categorie.thumbnail } alt={ categorie.title } />
-                <p><strong>{ `Preço: ${categorie.price}` }</strong></p>
+                <Link
+                  to={ `/product-details/${categorie.id}` }
+                  data-testid="product-detail-link"
+                >
+                  <p>{ categorie.title }</p>
+                  <img src={ categorie.thumbnail } alt={ categorie.title } />
+                  <p><strong>{ `Preço: ${categorie.price}` }</strong></p>
+                </Link>
               </div>
             ))
           )
