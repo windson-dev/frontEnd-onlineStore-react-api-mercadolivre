@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { getCategories,
   getProducts, getCategoriesFromID } from '../services/api';
 
+//
+
 export default class Home extends Component {
   constructor() {
     super();
