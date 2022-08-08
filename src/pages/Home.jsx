@@ -85,17 +85,17 @@ export default class Home extends Component {
 
         <aside>
           {
-            categories.map((categorie) => (
-              <label key={ categorie.id } htmlFor={ categorie.id }>
+            categories.map(({ name, id }) => (
+              <label key={ id } htmlFor={ id }>
                 <input
                   type="radio"
-                  value={ categorie.name }
+                  value={ name }
                   name="categoryRadios"
-                  id={ categorie.id }
+                  id={ id }
                   onChange={ this.handleChangeRadios }
                 />
-                <p data-testid="category" id={ categorie.id }>
-                  { categorie.name }
+                <p data-testid="category" id={ id }>
+                  { name }
                 </p>
               </label>
             ))
@@ -103,11 +103,12 @@ export default class Home extends Component {
         </aside>
 
         {
-          productsButton.length === 0 ? <p>Nenhum produto foi encontrado</p>
+          productsButton.length === 0
+            ? <p>Nenhum produto foi encontrado</p>
             : productsButton.map(({ title, thumbnail, price, id }) => (
               <div key={ id } data-testid="product">
                 <Link
-                  to={ `/product-details/${categorie.id}` }
+                  to={ `/product-details/${id}` }
                   data-testid="product-detail-link"
                 >
                   <p>{title}</p>
@@ -124,15 +125,15 @@ export default class Home extends Component {
 
         {
           radioChanged && (
-            categoriesArray.map((categorie) => (
-              <div key={ categorie.id } data-testid="product">
+            categoriesArray.map(({ id, title, thumbnail, price }) => (
+              <div key={ id } data-testid="product">
                 <Link
-                  to={ `/product-details/${categorie.id}` }
+                  to={ `/product-details/${id}` }
                   data-testid="product-detail-link"
                 >
-                  <p>{ categorie.title }</p>
-                  <img src={ categorie.thumbnail } alt={ categorie.title } />
-                  <p><strong>{ `Preço: ${categorie.price}` }</strong></p>
+                  <p>{ title }</p>
+                  <img src={ thumbnail } alt={ title } />
+                  <p><strong>{ `Preço: ${price}` }</strong></p>
                 </Link>
               </div>
             ))
