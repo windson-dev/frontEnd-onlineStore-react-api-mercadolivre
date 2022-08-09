@@ -128,7 +128,8 @@ export default class Home extends Component {
         </aside>
 
         {
-          productsButton.length === 0 ? <p>Nenhum produto foi encontrado</p>
+          productsButton.length === 0
+            ? <p>Nenhum produto foi encontrado</p>
             : productsButton.map(({ title, thumbnail, price, id }) => (
               <div key={ id }>
                 <Link
