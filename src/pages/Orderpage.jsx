@@ -7,15 +7,39 @@ export default class Orderpage extends Component {
     super();
     this.state = {
       products: [],
+      productsCart: [],
     };
   }
 
   async componentDidMount() {
     const { match: { params: { id } } } = this.props;
-    // console.log(id);
     const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
     const products = await response.json();
-    this.setState({ products });
+    this.setState({
+      products,
+    });
+  }
+
+  getParamsFromLocalStorage = (title, price1) => {
+    const storage = {
+      name: title,
+      price: price1,
+      quantity: 1,
+    };
+    const getItemsLocalStorage = JSON.parse(localStorage.getItem('items'));
+
+    if (getItemsLocalStorage) {
+      getItemsLocalStorage.splice(0, 0, storage);
+      localStorage.setItem('items', JSON.stringify(getItemsLocalStorage));
+    } else {
+      this.setState((prevState) => (
+        { productsCart: [...prevState.productsCart, storage],
+        }), () => {
+        const { productsCart } = this.state;
+
+        localStorage.setItem('items', JSON.stringify(productsCart));
+      });
+    }
   }
 
   render() {
@@ -33,16 +57,19 @@ export default class Orderpage extends Component {
         <h3 data-testid="product-detail-price">
           { `Preço: R$${price} `}
         </h3>
-
-        <Link
-          to={ `/shoppingcart/${title}/${price}` }
+        <button
+          type="button"
           data-testid="product-detail-add-to-cart"
+          onClick={ () => this.getParamsFromLocalStorage(title, price) }
         >
+          Adicionar ao Carrinho
+        </button>
+
+        <Link to="/Shoppingcart" data-testid="shopping-cart-button">
           <button
-            type="submit"
-            data-testid="shopping-cart-button"
+            type="button"
           >
-            Adicionar ao Carrinho
+            Ir para o carrinho
           </button>
         </Link>
 

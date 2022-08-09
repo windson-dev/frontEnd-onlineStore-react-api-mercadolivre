@@ -12,6 +12,7 @@ export default class Home extends Component {
       productsButton: [],
       categoriesArray: [],
       radioChanged: false,
+      detailProduts: [],
     };
   }
 
@@ -44,6 +45,26 @@ export default class Home extends Component {
     const categoriesArray = await response.results;
     this.setState({
       categoriesArray,
+    });
+  }
+
+  // Função que manipula o local storage.
+  getParamsFromLocalStorage = (title, price1) => {
+    // Objeto utilizado para armazenar no localStorage e depois ser Renderizado na Tela.
+    const storage = {
+      name: title,
+      price: price1,
+      quantity: 1,
+    };
+    // Utilizando o prevState para conseguir manter o objeto(produto) anterior dentro do localStorage...
+    // e adicionar objetos(produto) produtos novos junto com o spread operator.
+    this.setState((prevState) => (
+      { detailProduts: [...prevState.detailProduts, storage],
+      }), () => {
+      const { detailProduts } = this.state;
+      // Amazenando e passando para string os objetos...
+      // o objeto
+      localStorage.setItem('items', JSON.stringify(detailProduts));
     });
   }
 
@@ -147,16 +168,14 @@ export default class Home extends Component {
                   <p><strong>{ `Preço: ${price}` }</strong></p>
                 </div>
               </Link>
-              <Link
-                to={ `/shoppingcart/${title}/${price}` }
+              <button
+                type="submit"
                 data-testid="product-add-to-cart"
+                onClick={ () => this.getParamsFromLocalStorage(title, price) }
               >
-                <button
-                  type="submit"
-                >
-                  Adicionar ao Carrinho
-                </button>
-              </Link>
+                Adicionar ao Carrinho
+              </button>
+
             </div>
           ))
         )}

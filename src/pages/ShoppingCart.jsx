@@ -1,42 +1,53 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 export default class shoppingCart extends Component {
   constructor() {
     super();
     this.state = {
-      title: '',
-      price: '',
+      products: [],
     };
   }
 
   componentDidMount() {
-    const { match: { params: { title, price } } } = this.props;
-    this.setState({ title, price });
+    const getItemsLocalStorage = JSON.parse(localStorage.getItem('items'));
+    this.setState({
+      products: getItemsLocalStorage,
+    });
   }
 
   render() {
-    const { title, price } = this.state;
+    const { products } = this.state;
     return (
       <div>
-        <p
-          data-testid="shopping-cart-empty-message"
-        >
-          Seu carrinho está vazio
-        </p>
-        <h2 data-testid="shopping-cart-product-name">{title}</h2>
-        <h3>{`Preço: ${price}`}</h3>
-        <p data-testid="shopping-cart-product-quantity">Quantidade: 1</p>
+        { !products ? (
+          <p
+            data-testid="shopping-cart-empty-message"
+          >
+            Seu carrinho está vazio
+          </p>) : (
+          products.map(({ name, price, quantity }, index) => (
+            <div key={ index }>
+              <div data-testid="shopping-cart-product-name">
+                <p>
+                  <strong> Nome: </strong>
+                  { name }
+                </p>
+
+                <p>
+                  <strong>Preço: </strong>
+                  { price }
+                </p>
+
+                <p data-testid="shopping-cart-product-quantity">
+                  <strong>Quantidade: </strong>
+                  { quantity }
+                </p>
+                <br />
+              </div>
+
+            </div>
+          )))}
       </div>
     );
   }
 }
-
-shoppingCart.propTypes = {
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      price: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-};
