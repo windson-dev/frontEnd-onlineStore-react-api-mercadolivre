@@ -48,7 +48,11 @@ export default class Home extends Component {
   }
 
   render() {
-    const { categories, productsButton, categoriesArray, radioChanged } = this.state;
+    const {
+      categories,
+      productsButton,
+      categoriesArray,
+      radioChanged } = this.state;
     return (
       <main>
 
@@ -80,7 +84,7 @@ export default class Home extends Component {
             type="button"
 
           >
-            Button
+            Carrinho
           </button>
         </Link>
 
@@ -103,24 +107,56 @@ export default class Home extends Component {
         {
           productsButton.length === 0 ? <p>Nenhum produto foi encontrado</p>
             : productsButton.map(({ title, thumbnail, price, id }) => (
-              <div key={ id } data-testid="product">
-                <p>{title}</p>
-                <img src={ thumbnail } alt={ title } />
-                <p>
-                  {price}
-                  {' '}
-                  R$
-                </p>
+              <div key={ id }>
+                <Link
+                  to={ `/orderpage/${id}` }
+                  data-testid="product-detail-link"
+                >
+                  <div data-testid="product">
+                    <p>{title}</p>
+                    <img src={ thumbnail } alt={ title } />
+                    <p>{`Preço: R$${price}`}</p>
+                  </div>
+                </Link>
+                <Link
+                  to={ `/shoppingcart/${title}/${price}` }
+                  data-testid="product-add-to-cart"
+                >
+                  <button
+                    type="submit"
+                  >
+                    Adicionar ao Carrinho
+                  </button>
+                </Link>
               </div>
             ))
         }
 
         {radioChanged && (
-          categoriesArray.map((e) => (
-            <div key={ e.id } data-testid="product">
-              <p>{ e.title }</p>
-              <img src={ e.thumbnail } alt={ e.title } />
-              <p><strong>{ `Preço: ${e.price}` }</strong></p>
+          categoriesArray.map(({ title, thumbnail, price, id }) => (
+            <div key={ id }>
+              <Link
+                to={ `/orderpage/${id}` }
+                data-testid="product-detail-link"
+              >
+                <div
+                  data-testid="product"
+                >
+                  <p>{ title }</p>
+                  <img src={ thumbnail } alt={ title } />
+                  <p><strong>{ `Preço: ${price}` }</strong></p>
+                </div>
+              </Link>
+              <Link
+                to={ `/shoppingcart/${title}/${price}` }
+                data-testid="product-add-to-cart"
+              >
+                <button
+                  type="submit"
+                >
+                  Adicionar ao Carrinho
+                </button>
+              </Link>
             </div>
           ))
         )}
