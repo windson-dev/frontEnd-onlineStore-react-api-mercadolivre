@@ -12,6 +12,7 @@ export default class Home extends Component {
       productsButton: [],
       categoriesArray: [],
       radioChanged: false,
+      detailProduts: [],
     };
   }
 
@@ -47,8 +48,32 @@ export default class Home extends Component {
     });
   }
 
+  // Função que manipula o local storage.
+  getParamsFromLocalStorage = (title, price1) => {
+    // Objeto utilizado para armazenar no localStorage e depois ser Renderizado na Tela.
+    const storage = {
+      name: title,
+      price: price1,
+      quantity: 1,
+    };
+    // Utilizando o prevState para conseguir manter o objeto(produto) anterior dentro do localStorage...
+    // e adicionar objetos(produto) produtos novos junto com o spread operator.
+    this.setState((prevState) => (
+      { detailProduts: [...prevState.detailProduts, storage],
+      }), () => {
+      const { detailProduts } = this.state;
+      // Amazenando e passando para string os objetos...
+      // o objeto
+      localStorage.setItem('items', JSON.stringify(detailProduts));
+    });
+  }
+
   render() {
-    const { categories, productsButton, categoriesArray, radioChanged } = this.state;
+    const {
+      categories,
+      productsButton,
+      categoriesArray,
+      radioChanged } = this.state;
     return (
       <main>
 
@@ -79,13 +104,13 @@ export default class Home extends Component {
           <button
             type="button"
           >
-            Button
+            Carrinho
           </button>
         </Link>
 
         <aside>
           {
-            categories.map(({ name, id }) => (
+            categories.map(({ id, name }) => (
               <label key={ id } htmlFor={ id }>
                 <input
                   type="radio"
@@ -106,39 +131,57 @@ export default class Home extends Component {
           productsButton.length === 0
             ? <p>Nenhum produto foi encontrado</p>
             : productsButton.map(({ title, thumbnail, price, id }) => (
-              <div key={ id } data-testid="product">
+              <div key={ id }>
                 <Link
-                  to={ `/product-details/${id}` }
+                  to={ `/orderpage/${id}` }
                   data-testid="product-detail-link"
                 >
-                  <p>{title}</p>
-                  <img src={ thumbnail } alt={ title } />
-                  <p>
-                    {price}
-                    {' '}
-                    R$
-                  </p>
+                  <div data-testid="product">
+                    <p>{title}</p>
+                    <img src={ thumbnail } alt={ title } />
+                    <p>{`Preço: R$${price}`}</p>
+                  </div>
+                </Link>
+                <Link
+                  to={ `/shoppingcart/${title}/${price}` }
+                  data-testid="product-add-to-cart"
+                >
+                  <button
+                    type="submit"
+                  >
+                    Adicionar ao Carrinho
+                  </button>
                 </Link>
               </div>
             ))
         }
 
-        {
-          radioChanged && (
-            categoriesArray.map(({ id, title, thumbnail, price }) => (
-              <div key={ id } data-testid="product">
-                <Link
-                  to={ `/product-details/${id}` }
-                  data-testid="product-detail-link"
+        {radioChanged && (
+          categoriesArray.map(({ title, thumbnail, price, id }) => (
+            <div key={ id }>
+              <Link
+                to={ `/orderpage/${id}` }
+                data-testid="product-detail-link"
+              >
+                <div
+                  data-testid="product"
                 >
                   <p>{ title }</p>
                   <img src={ thumbnail } alt={ title } />
                   <p><strong>{ `Preço: ${price}` }</strong></p>
-                </Link>
-              </div>
-            ))
-          )
-        }
+                </div>
+              </Link>
+              <button
+                type="submit"
+                data-testid="product-add-to-cart"
+                onClick={ () => this.getParamsFromLocalStorage(title, price) }
+              >
+                Adicionar ao Carrinho
+              </button>
+
+            </div>
+          ))
+        )}
 
       </main>
 
